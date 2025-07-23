@@ -1,4 +1,5 @@
 import type { ScrapingResponse, DynamicScrapingRequest } from '@/types/scraping';
+import axios from 'axios';
 
 export class ScrapingClient {
   private baseUrl: string;
@@ -8,7 +9,7 @@ export class ScrapingClient {
   }
 
   async scrapeStatic(url: string): Promise<ScrapingResponse> {
-    const response = await fetch(`${this.baseUrl}/api/scrape?url=${encodeURIComponent(url)}`);
+    const response = await fetch(`${this.baseUrl}/api/scrape?url=${url}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -18,30 +19,13 @@ export class ScrapingClient {
   }
 
   async scrapeDynamic(request: DynamicScrapingRequest): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/scrape-dynamic`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
+    const response = await axios.post(`${this.baseUrl}/api/scrape-dynamic`, request);
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    return await response.data;
   }
 }
-
-// Usage in component
-export async function useScrapingClient() {
-  const client = new ScrapingClient();
-  
-  try {
-    const result = await client.scrapeStatic('https://example.com');
-    console.log('Scraped data:', result.data);
-  } catch (error) {
-    console.error('Scraping failed:', error);
-  }
-}
+export default ScrapingClient;

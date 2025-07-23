@@ -43,6 +43,13 @@ export interface DynamicScrapingRequest {
   screenshots?: boolean;
 }
 
+export interface DynamicScrapingResponse {
+  success: boolean;
+  data: DynamicScrapedData;
+  screenshot?: string;
+  scrapedAt: string;
+}
+
 export interface DynamicScrapedData {
   title: string;
   url: string;

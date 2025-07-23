@@ -1,19 +1,8 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { NextRequest, NextResponse } from 'next/server';
-import type { DynamicScrapingRequest, DynamicScrapedData } from '@/types/scraping';
+import type { DynamicScrapingRequest, DynamicScrapedData, DynamicScrapingResponse, ErrorResponse } from '@/types/scraping';
 
-interface DynamicScrapingResponse {
-  success: boolean;
-  data: DynamicScrapedData;
-  screenshot?: string;
-  scrapedAt: string;
-}
 
-interface ErrorResponse {
-  error: string;
-  message?: string;
-  stack?: string;
-}
 
 export async function POST(request: NextRequest): Promise<NextResponse<DynamicScrapingResponse | ErrorResponse>> {
   let browser: Browser | null = null;
@@ -106,15 +95,15 @@ export async function POST(request: NextRequest): Promise<NextResponse<DynamicSc
 
       // Extract links
       data.content.links = Array.from(document.querySelectorAll('a[href]'))
-        .map(a => {
-          const anchor = a as HTMLAnchorElement;
-          return {
-            text: anchor.textContent?.trim() || '',
-            href: anchor.href
-          };
-        })
-        .filter(link => link.text && link.href)
-        .slice(0, 20);
+      .map(a => {
+        const anchor = a as HTMLAnchorElement;
+        return {
+          text: anchor.textContent?.trim() || '',
+          href: anchor.href
+        };
+      })
+      .filter(link => link.text && link.href)
+      .slice(0, 20);
 
       // Extract any data attributes
       const dataElements = document.querySelectorAll('[data-*]');

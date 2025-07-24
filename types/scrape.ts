@@ -10,30 +10,22 @@ export interface PhoneData {
 
 export interface LaptopData {
   id: number;
-  company: laptopModel,
+  company: string,
   title: string;
   price: string;
   image?: string;
   productUrl?: string;
   scrapedAt: string;
-}
-export enum laptopModel {
-  ASUS,
-  LENOVO
 }
 
 export interface GPUData {
   id: number;
-  company: GPUModel,
+  company: string,
   title: string;
   price: string;
   image?: string;
   productUrl?: string;
   scrapedAt: string;
-}
-export enum GPUModel {
-  INTEL,
-  AMD
 }
 
 export interface ProductsData {
